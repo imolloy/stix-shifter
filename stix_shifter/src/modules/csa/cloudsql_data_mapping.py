@@ -4,11 +4,13 @@ import re
 
 from stix_shifter.src.exceptions import DataMappingException
 
-def _fetch_mapping():
+def _fetch_mapping(dialect=''):
     try:
+        if dialect != '':
+            dialect = dialect + '_'
         basepath = path.dirname(__file__)
         filepath = path.abspath(
-            path.join(basepath, "json", "from_stix_map.json"))
+            path.join(basepath, "json", dialect + "from_stix_map.json"))
 
         map_file = open(filepath).read()
         map_data = json.loads(map_file)
@@ -30,7 +32,7 @@ class CloudSQLDataMapper:
                 self.dialect = 'at'
 
     def map_object(self, stix_object_name):
-        self.map_data = _fetch_mapping()
+        self.map_data = _fetch_mapping(self.dialect)
         if stix_object_name in self.map_data and self.map_data[stix_object_name] != None:
             return self.map_data[stix_object_name]
         else:
@@ -38,7 +40,7 @@ class CloudSQLDataMapper:
                 "Unable to map object `{}` into SQL".format(stix_object_name))
 
     def map_field(self, stix_object_name, stix_property_name):
-        self.map_data = _fetch_mapping()
+        self.map_data = _fetch_mapping(self.dialect)
         if stix_object_name in self.map_data and stix_property_name in self.map_data[stix_object_name]["fields"]:
             return self.map_data[stix_object_name]["fields"][stix_property_name]
         else:

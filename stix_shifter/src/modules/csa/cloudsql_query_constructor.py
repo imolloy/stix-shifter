@@ -121,6 +121,7 @@ class SqlQueryStringPatternTranslator:
                         "Network protocol {} is not supported.".format(protocol_key))
             elif stix_field == 'start' or stix_field == 'end':
                 transformer = TimestampToMilliseconds()
+                # TODO Skydive uses seconds for timestamps, but this is something we should configure
                 expression.value = int(transformer.transform(expression.value) / 1000)
 
             # Some values are formatted differently based on how they're being compared
@@ -142,6 +143,8 @@ class SqlQueryStringPatternTranslator:
 
             comparison_string = ""
             mapped_fields_count = len(mapped_fields_array)
+            if len(mapped_fields_array) == 0:
+                comparison_string += "false"
             for mapped_field in mapped_fields_array:
                 comparison_string += "{mapped_field} {comparator} {value}".format(
                     mapped_field=mapped_field, comparator=comparator, value=value)
@@ -198,12 +201,12 @@ class SqlQueryStringPatternTranslator:
         return self._parse_expression(pattern)
 
 
-def translate_pattern(pattern: Pattern, data_model_mapping):
+def translate_pattern(pattern: Pattern, data_model_mapping, number_rows=1000):
     x = SqlQueryStringPatternTranslator(pattern, data_model_mapping)
     select_statement = x.dmm.map_selections()
     queries = []
     bucket=x.dmm.dialect+"-hourly-dumps" 
     for query in x.queries:
-        queries.append('SELECT {select_statement} FROM cos://us-geo/{bucket} STORED AS JSON WHERE {where_clause}'
-                       .format(select_statement=select_statement, bucket=bucket, where_clause=query))
+        queries.append('SELECT {select_statement} FROM cos://us-geo/{bucket} STORED AS JSON WHERE {where_clause} PARTITIONED EVERY {number_rows} ROWS'
+                       .format(select_statement=select_statement, bucket=bucket, where_clause=query, number_rows=number_rows))
     return {'sql_queries': queries, 'parsed_stix': x.parsed_pattern}

@@ -10,9 +10,10 @@ logger = logging.getLogger(__name__)
 
 class StixToCloudSQL(BaseQueryTranslator):
 
-    def __init__(self, dialect=None):
+    def __init__(self, dialect=None, rows=1024):
         super().__init__()
         self.dialect = dialect
+        self.rows = rows
 
     def transform_query(self, data, options, mapping=None):
         """
@@ -30,5 +31,5 @@ class StixToCloudSQL(BaseQueryTranslator):
         query_object = generate_query(data)
         data_model_mapper = cloudsql_data_mapping.CloudSQLDataMapper(self.dialect)
         query_string = cloudsql_query_constructor.translate_pattern(
-            query_object, data_model_mapper)
+            query_object, data_model_mapper, number_rows=self.rows)
         return query_string
