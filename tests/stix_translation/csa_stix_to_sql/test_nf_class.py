@@ -40,7 +40,7 @@ protocols = {
     "sctp": "132"
 }
 
-translation = stix_translation.StixTranslation()
+translate = stix_translation.StixTranslation()
 
 class TestStixToSql(unittest.TestCase, object):
 
@@ -160,7 +160,7 @@ class TestStixToSql(unittest.TestCase, object):
         stix_validation_exception = stix_translation.StixValidationException
         stix_pattern = "[not_a_valid_pattern]"
         self.assertRaises(stix_validation_exception,
-                          lambda: translation.translate('csa', 'query', '{}', stix_pattern))
+                          lambda: translate.translate('csa', 'query', '{}', stix_pattern))
     
     def test_network_traffic_protocols(self):
         interface = csa_translator.Translator(dialect='nf', rows=10)
