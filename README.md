@@ -22,7 +22,7 @@ Requires Python 3.6
 
 This library takes in STIX 2 Patterns as input, and "finds" data that matches the patterns inside various products that house repositories of cybersecurity data. Examples of such products include SIEM systems, endpoint management systems, threat intelligence platforms, orchestration platforms, network control points, data lakes, and more.
 
-In addition to "finding" the data using these patterns, STIX-Shifter uniquely also _transforms the output_ into STIX 2 Observations. Why would we do that you ask? To put it simply - so that all of the security data, regardless of the source, mostly looks and behaves the same. As anyone with experience in data science will tell you, the cleansing and normalizing of the data accross domains, is one of the largest hurdles to overcome with attempting to build cross-platform security analytics. This is one of the barriers we are attempting to break down with STIX Shifter.
+In addition to "finding" the data using these patterns, STIX-Shifter uniquely also _transforms the output_ into STIX 2 Observations. Why would we do that you ask? To put it simply - so that all of the security data, regardless of the source, mostly looks and behaves the same. As anyone with experience in data science will tell you, the cleansing and normalizing of the data across domains, is one of the largest hurdles to overcome with attempting to build cross-platform security analytics. This is one of the barriers we are attempting to break down with STIX Shifter.
 
 ## This sounds like Sigma, I already have that
 
@@ -33,7 +33,7 @@ In addition to "finding" the data using these patterns, STIX-Shifter uniquely al
 You may want to use this library and/or contribute to development, if any of the follwing are true:
 
 - You are a vendor or project owner who wants to add some form of query or enrichment functionality to your product capabilities
-- You are an end user and want to have a way to script searches and/or queries as part of your orchestrsation flow
+- You are an end user and want to have a way to script searches and/or queries as part of your orchestration flow
 - You are a vendor or project owner who has data that could be made available, and you want to contribute an adapter
 - You just want to help make the world a safer place!
 
@@ -48,11 +48,11 @@ Stix-shifter handles two primary functions:
 
 ### Converting from STIX Patterns to data source queries (query) or from data source results to STIX cyber observables (results)
 
-#### Call the stix_shifter in the format of
+#### Call the stix_translation in the format of
 
 ```
-usage: stix_shifter.py translate [-h]
-                                 {qradar, dummy, splunk}
+usage: stix_translation.py translate [-h]
+                                 {'qradar', 'dummy', 'car', 'cim', 'splunk', 'elastic', 'bigfix', 'csa', 'csa:at', 'csa:nf'}
                                  {results, query} data
 
 positional arguments:
@@ -172,11 +172,11 @@ python main.py translate qradar results \
 
 ## Transmission
 
-#### Call the stix_shifter in the format of
+#### Call the stix_transmission in the format of
 
 ```
-usage: stix_shifter.py transmit [-h]
-                      {async_dummy, synchronous_dummy, qradar, splunk, bigfix}
+usage: stix_transmission.py transmit [-h]
+                      {'async_dummy', 'synchronous_dummy', 'qradar', 'splunk', 'bigfix', 'csa'}
 
 positional arguments:
 {<async_dummy, synchronous_dummy, qradar, splunk, bigfix>}         Transmission module to use
@@ -248,11 +248,11 @@ python main.py transmit qradar '{"host":"<ip address>", "port":"<port>", "cert":
 
 ### Example of converting a STIX pattern to an IBM QRadar AQL query:
 
-[See the QRadar module documentation](stix_shifter/src/modules/qradar/README.md)
+[See the QRadar module documentation](stix_shifter/stix_translation/src/modules/qradar/README.md)
 
 ### Example of converting IBM QRadar events to STIX:
 
-[See the QRadar module documentation](stix_shifter/src/modules/qradar/README.md)
+[See the QRadar module documentation](stix_shifter/stix_translation/src/modules/qradar/README.md)
 
 # Contributing
 
